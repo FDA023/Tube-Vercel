@@ -2,219 +2,364 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TubeMaster Pro 🚀</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>YouTube Pro</title>
+    <link rel="icon" href="https://www.youtube.com/s/desktop/atleast_1px_2x/img/favicon_144.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #00f2ea;
-            --secondary: #ff0050;
-            --bg: #0f0c29;
-            --glass: rgba(255, 255, 255, 0.1);
+            --primary-red: #ff0000;
+            --deep-red: #500000;
+            --text-color: #ffffff;
+            --glass-bg: rgba(20, 20, 20, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --neon-shadow: 0 0 20px rgba(255, 0, 0, 0.4);
         }
 
         body {
-            font-family: 'Cairo', sans-serif;
-            background: linear-gradient(45deg, #0f0c29, #302b63, #24243e);
-            color: white;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
             margin: 0;
+            padding: 0;
+            font-family: 'Cairo', sans-serif;
+            background-color: #000;
+            color: var(--text-color);
             overflow-x: hidden;
+            min-height: 100vh;
+            background: radial-gradient(circle at 50% -20%, #800000 0%, #200000 40%, #000000 80%);
+            background-attachment: fixed;
         }
 
-        .container {
-            background: var(--glass);
+        body::before {
+            content: '';
+            position: absolute;
+            top: 20%;
+            left: -10%;
+            width: 300px;
+            height: 300px;
+            background: var(--primary-red);
+            filter: blur(150px);
+            opacity: 0.2;
+            z-index: -1;
+            animation: float 10s infinite alternate;
+        }
+        
+        body::after {
+            content: '';
+            position: absolute;
+            bottom: 10%;
+            right: -10%;
+            width: 250px;
+            height: 250px;
+            background: purple;
+            filter: blur(120px);
+            opacity: 0.15;
+            z-index: -1;
+            animation: float 8s infinite alternate-reverse;
+        }
+
+        @keyframes float {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(20px, 20px); }
+        }
+
+        .yt-header {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            height: 60px;
+            background: rgba(0, 0, 0, 0.2);
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 20px;
-            padding: 2rem;
-            width: 90%;
-            max-width: 400px;
-            box-shadow: 0 0 20px rgba(0, 242, 234, 0.2);
-            text-align: center;
-            animation: float 6s ease-in-out infinite;
+            border-bottom: 1px solid var(--glass-border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
-        h1 {
-            font-weight: 900;
-            font-size: 2rem;
-            margin-bottom: 1.5rem;
-            text-transform: uppercase;
-            background: linear-gradient(to right, var(--primary), white);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
-        .input-group {
+        .yt-logo-icon {
+            width: 35px;
+            height: 25px;
+            background: linear-gradient(135deg, #ff0000, #cc0000);
+            border-radius: 6px;
             position: relative;
-            margin-bottom: 1.5rem;
+            box-shadow: 0 0 15px rgba(255, 0, 0, 0.5);
+        }
+        
+        .yt-logo-icon::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border-top: 4px solid transparent;
+            border-bottom: 4px solid transparent;
+            border-left: 8px solid white;
         }
 
-        input {
+        .logo-text {
+            font-weight: 900;
+            font-size: 1.4rem;
+            letter-spacing: -0.5px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+        }
+
+        .main-content {
+            max-width: 600px;
+            margin: 60px auto;
+            padding: 20px;
+            text-align: center;
+        }
+
+        /* تعديل العنوان ليكون أكبر قليلاً ليناسب النص الجديد */
+        h2.headline {
+            font-weight: 700;
+            margin-bottom: 40px;
+            font-size: 1.8rem;
+            text-shadow: 0 0 20px rgba(255, 0, 0, 0.3);
+            line-height: 1.4;
+        }
+
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 30px 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            transition: transform 0.3s;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255, 0, 0, 0.3);
+        }
+
+        .input-wrapper {
+            position: relative;
+            margin-bottom: 25px;
+        }
+
+        .search-input {
             width: 100%;
-            padding: 15px;
-            border-radius: 50px;
-            border: 2px solid rgba(255, 255, 255, 0.1);
-            background: rgba(0, 0, 0, 0.3);
+            background: rgba(0, 0, 0, 0.4);
+            border: 2px solid var(--glass-border);
+            border-radius: 15px;
+            padding: 15px 20px;
             color: white;
+            font-size: 1.1rem;
             font-family: inherit;
             outline: none;
+            box-sizing: border-box;
             text-align: center;
             transition: 0.3s;
-            box-sizing: border-box; /* مهم جداً لضبط الحواف */
         }
 
-        input:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 15px var(--primary);
+        .search-input:focus {
+            border-color: var(--primary-red);
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.2);
+            background: rgba(0, 0, 0, 0.6);
         }
 
-        button {
-            background: linear-gradient(45deg, var(--secondary), #ff4b2b);
+        .action-btn {
+            background: linear-gradient(90deg, #ff0000 0%, #b30000 100%);
             color: white;
             border: none;
-            padding: 15px 40px;
+            padding: 16px 40px;
             border-radius: 50px;
-            font-weight: bold;
+            font-weight: 700;
             font-size: 1.1rem;
             cursor: pointer;
-            transition: 0.3s;
             width: 100%;
-            font-family: 'Cairo', sans-serif;
+            font-family: inherit;
+            box-shadow: 0 5px 20px rgba(255, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
 
-        button:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 20px var(--secondary);
+        .action-btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 10px 30px rgba(255, 0, 0, 0.5);
+            letter-spacing: 1px;
         }
 
-        /* Loading Spinner */
-        .loader {
+        .action-btn:active {
+            transform: scale(0.98);
+        }
+
+        .loader-container {
             display: none;
+            margin: 30px auto;
+        }
+        
+        .glow-spinner {
+            width: 50px;
+            height: 50px;
             border: 4px solid rgba(255, 255, 255, 0.1);
-            border-left-color: var(--primary);
+            border-top: 4px solid var(--primary-red);
             border-radius: 50%;
-            width: 30px;
-            height: 30px;
             animation: spin 1s linear infinite;
-            margin: 20px auto;
+            box-shadow: 0 0 15px var(--primary-red);
         }
 
-        /* Results Area */
-        #result {
+        #resultArea {
             display: none;
-            margin-top: 2rem;
-            background: rgba(0, 0, 0, 0.2);
-            padding: 15px;
-            border-radius: 15px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 40px;
+            animation: slideUp 0.5s ease-out;
         }
 
-        .thumbnail {
+        .video-card {
+            background: rgba(20, 20, 20, 0.8);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            overflow: hidden;
+            text-align: right;
+        }
+
+        .thumbnail-wrapper {
+            position: relative;
             width: 100%;
-            border-radius: 10px;
-            margin-bottom: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            padding-top: 56.25%;
+        }
+
+        .thumbnail-img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .video-details {
+            padding: 15px;
         }
 
         .video-title {
             font-size: 1rem;
-            margin-bottom: 15px;
-            color: #ddd;
+            margin: 0 0 10px 0;
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
         }
 
-        .download-btn {
+        .download-btn-final {
             display: block;
+            background: #222;
+            color: white;
             text-decoration: none;
-            background: var(--primary);
-            color: #000;
-            padding: 10px;
+            padding: 12px;
             border-radius: 10px;
-            margin-top: 10px;
+            text-align: center;
+            margin-top: 15px;
             font-weight: bold;
+            border: 1px solid #333;
             transition: 0.3s;
         }
 
-        .download-btn:hover {
-            background: white;
-            box-shadow: 0 0 10px white;
+        .download-btn-final:hover {
+            background: var(--primary-red);
+            border-color: var(--primary-red);
         }
 
         @keyframes spin { 100% { transform: rotate(360deg); } }
-        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <h1>TubeMaster <span style="font-size:0.5em; vertical-align: super; color: var(--primary);">PRO</span></h1>
-        
-        <div class="input-group">
-            <input type="text" id="urlInput" placeholder="ضع رابط الفيديو هنا...">
-        </div>
-
-        <button onclick="analyzeVideo()" id="analyzeBtn">تحليل وكشف 🕵️‍♂️</button>
-        
-        <div class="loader" id="loader"></div>
-
-        <div id="result">
-            <img id="thumb" src="" class="thumbnail">
-            <h3 id="vidTitle" class="video-title"></h3>
-            <a id="dlLink" href="#" class="download-btn" target="_blank">📺 تحميل الفيديو</a>
+    <div class="yt-header">
+        <div class="logo-container">
+            <div class="yt-logo-icon"></div>
+            <span class="logo-text">YouTube</span>
         </div>
     </div>
 
+    <div class="main-content">
+        <h2 class="headline">شاهد العالم بجودة عالية <br> <span style="color: var(--primary-red);">و تحميل</span></h2>
+        
+        <div class="glass-card">
+            <div class="input-wrapper">
+                <input type="text" class="search-input" id="urlInput" placeholder="ضع رابط الفيديو هنا..." autocomplete="off">
+            </div>
+
+            <button id="analyzeBtn" class="action-btn" onclick="analyzeVideo()">
+                كشف الفيديو 🚀
+            </button>
+        </div>
+
+        <div class="loader-container" id="loader">
+            <div class="glow-spinner"></div>
+        </div>
+
+        <div id="resultArea">
+            <div class="video-card">
+                <div class="thumbnail-wrapper">
+                    <img id="thumb" src="" class="thumbnail-img" alt="">
+                </div>
+                <div class="video-details">
+                    <h3 id="vidTitle" class="video-title">العنوان</h3>
+                    <a id="dlLink" href="#" target="_blank" class="download-btn-final">
+                        ⬇️ تحميل الفيديو الآن
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
     <script>
-        // 🚀 رابط سيرفرك الجديد على Vercel
-        // تأكد أن الرابط ينتهي بـ /get-info
         const API_URL = "https://tube-vercel.vercel.app/get-info"; 
 
         async function analyzeVideo() {
             const input = document.getElementById('urlInput');
             const btn = document.getElementById('analyzeBtn');
             const loader = document.getElementById('loader');
-            const resultBox = document.getElementById('result');
+            const resultArea = document.getElementById('resultArea');
 
-            if (!input.value) {
-                alert("الرجاء وضع رابط فيديو أولاً! 😠");
-                return;
-            }
+            if (!input.value.trim()) return;
 
-            // تفعيل وضع التحميل
             btn.style.display = 'none';
             loader.style.display = 'block';
-            resultBox.style.display = 'none';
+            resultArea.style.display = 'none';
 
             try {
-                // الاتصال بالسيرفر
                 const response = await fetch(`${API_URL}?url=${encodeURIComponent(input.value)}`);
                 const data = await response.json();
 
-                if (data.error) {
-                    throw new Error(data.error);
-                }
+                if (data.error) throw new Error(data.error);
 
-                // عرض النتائج
                 document.getElementById('thumb').src = data.thumbnail;
                 document.getElementById('vidTitle').innerText = data.title;
-                document.getElementById('dlLink').href = data.video_url;
+                
+                if (data.video_url) {
+                     document.getElementById('dlLink').href = data.video_url;
+                } else {
+                     throw new Error("لم يتم العثور على رابط مباشر");
+                }
 
                 loader.style.display = 'none';
-                resultBox.style.display = 'block';
+                resultArea.style.display = 'block';
                 btn.style.display = 'block';
-                btn.innerText = "تحليل فيديو آخر 🔄";
+                btn.innerText = "بحث جديد 🔄";
+                input.value = '';
 
             } catch (error) {
                 loader.style.display = 'none';
                 btn.style.display = 'block';
-                alert("حدث خطأ: " + error.message);
+                alert(error.message);
             }
         }
     </script>
+
 </body>
 </html>
 
