@@ -15,18 +15,23 @@ def get_video_info():
     if not url:
         return jsonify({"error": "No URL provided"}), 400
 
-    # --- قائمة السيرفرات القوية (نظام الطوارئ) ---
-    # سيقوم الكود بتجربتها بالترتيب
+    # --- القائمة الذهبية للسيرفرات (تعمل بنظام التتابع) ---
+    # إذا مات واحد، يحيي الآخر!
     cobalt_instances = [
-        "https://api.cobalt.bpj.li/api/json",      # سيرفر 1 (سريع)
-        "https://cobalt.pub/api/json",             # سيرفر 2 (عام)
-        "https://cobalt.kwiatekmiki.pl/api/json",  # سيرفر 3 (احتياطي)
+        "https://co.wuk.sh/api/json",             # السيرفر الأصلي (الأقوى)
+        "https://cobalt.gwoa.at/api/json",        # سيرفر نمساوي سريع
+        "https://cobalt.synced.team/api/json",    # سيرفر احتياطي 1
+        "https://api.cobalt.cwinfo.net/api/json", # سيرفر احتياطي 2
+        "https://cobalt.junker.ddns.net/api/json",# سيرفر احتياطي 3
+        "https://api.cobalt.tools/api/json"       # السيرفر الرسمي (أحياناً مغلق)
     ]
 
     headers = {
         "Accept": "application/json",
         "Content-Type": "application/json",
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+        "Origin": "https://tube-vercel.vercel.app",
+        "Referer": "https://tube-vercel.vercel.app/"
     }
 
     payload = {
@@ -35,14 +40,19 @@ def get_video_info():
         "filenamePattern": "basic"
     }
 
-    # حلقة تكرار لتجربة السيرفرات واحداً تلو الآخر
+    # حلقة المحاولة المستميتة
     for api_url in cobalt_instances:
         try:
-            print(f"Trying server: {api_url}") # للتوضيح في السجلات
-            response = requests.post(api_url, json=payload, headers=headers, timeout=10)
-            data = response.json()
+            print(f"Trying server: {api_url} ...") 
+            response = requests.post(api_url, json=payload, headers=headers, timeout=8)
+            
+            # إذا كان الرد ليس JSON، نعتبره فشلاً ونجرب التالي
+            try:
+                data = response.json()
+            except:
+                continue
 
-            # إذا نجح السيرفر وأعطانا رابطاً، نوقف البحث ونرسل النتيجة
+            # حالة النجاح ✅
             if 'url' in data:
                 return jsonify({
                     "title": "تم جلب الفيديو بنجاح 🎥",
@@ -50,15 +60,17 @@ def get_video_info():
                     "video_url": data['url']
                 })
             
-            # إذا رد السيرفر بخطأ، نجرب التالي
-            continue 
-
+            # حالات الفشل المعروفة من السيرفر
+            if 'text' in data:
+                 print(f"Server Error: {data['text']}")
+                 continue # جرب السيرفر التالي
+            
         except Exception as e:
-            # إذا كان السيرفر طافياً، نجرب التالي فوراً
-            continue
+            print(f"Connection Failed to {api_url}: {str(e)}")
+            continue # السيرفر طافي، اللي بعده!
 
-    # إذا جربنا كل السيرفرات وفشلت كلها
-    return jsonify({"error": "جميع السيرفرات مشغولة حالياً، حاول بعد دقيقة! 😔"}), 500
+    # إذا وصلنا هنا، يعني كل السيرفرات الـ 6 فشلت (نادر جداً)
+    return jsonify({"error": "جميع السيرفرات مشغولة، حاول بعد دقيقة! 😔"}), 500
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
