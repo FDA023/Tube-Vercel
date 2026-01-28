@@ -1,13 +1,14 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_file
 from flask_cors import CORS
 import yt_dlp
+import os
 
 app = Flask(__name__)
 CORS(app)
 
 @app.route('/')
 def home():
-    return "TubeMaster on Vercel is Working! 🚀"
+    return send_file('index.html')
 
 @app.route('/get-info', methods=['GET'])
 def get_video_info():
