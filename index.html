@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TubeMaster Pro 🚀</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #00f2ea;
+            --secondary: #ff0050;
+            --bg: #0f0c29;
+            --glass: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: linear-gradient(45deg, #0f0c29, #302b63, #24243e);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        .container {
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 2rem;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 0 20px rgba(0, 242, 234, 0.2);
+            text-align: center;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        h1 {
+            font-weight: 900;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+            background: linear-gradient(to right, var(--primary), white);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+
+        input {
+            width: 100%;
+            padding: 15px;
+            border-radius: 50px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            background: rgba(0, 0, 0, 0.3);
+            color: white;
+            font-family: inherit;
+            outline: none;
+            text-align: center;
+            transition: 0.3s;
+            box-sizing: border-box; /* مهم جداً لضبط الحواف */
+        }
+
+        input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 15px var(--primary);
+        }
+
+        button {
+            background: linear-gradient(45deg, var(--secondary), #ff4b2b);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: 0.3s;
+            width: 100%;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px var(--secondary);
+        }
+
+        /* Loading Spinner */
+        .loader {
+            display: none;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-left-color: var(--primary);
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        /* Results Area */
+        #result {
+            display: none;
+            margin-top: 2rem;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 15px;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .thumbnail {
+            width: 100%;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+        }
+
+        .video-title {
+            font-size: 1rem;
+            margin-bottom: 15px;
+            color: #ddd;
+        }
+
+        .download-btn {
+            display: block;
+            text-decoration: none;
+            background: var(--primary);
+            color: #000;
+            padding: 10px;
+            border-radius: 10px;
+            margin-top: 10px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .download-btn:hover {
+            background: white;
+            box-shadow: 0 0 10px white;
+        }
+
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>TubeMaster <span style="font-size:0.5em; vertical-align: super; color: var(--primary);">PRO</span></h1>
+        
+        <div class="input-group">
+            <input type="text" id="urlInput" placeholder="ضع رابط الفيديو هنا...">
+        </div>
+
+        <button onclick="analyzeVideo()" id="analyzeBtn">تحليل وكشف 🕵️‍♂️</button>
+        
+        <div class="loader" id="loader"></div>
+
+        <div id="result">
+            <img id="thumb" src="" class="thumbnail">
+            <h3 id="vidTitle" class="video-title"></h3>
+            <a id="dlLink" href="#" class="download-btn" target="_blank">📺 تحميل الفيديو</a>
+        </div>
+    </div>
+
+    <script>
+        // 🚀 رابط سيرفرك الجديد على Vercel
+        // تأكد أن الرابط ينتهي بـ /get-info
+        const API_URL = "https://tube-vercel.vercel.app/get-info"; 
+
+        async function analyzeVideo() {
+            const input = document.getElementById('urlInput');
+            const btn = document.getElementById('analyzeBtn');
+            const loader = document.getElementById('loader');
+            const resultBox = document.getElementById('result');
+
+            if (!input.value) {
+                alert("الرجاء وضع رابط فيديو أولاً! 😠");
+                return;
+            }
+
+            // تفعيل وضع التحميل
+            btn.style.display = 'none';
+            loader.style.display = 'block';
+            resultBox.style.display = 'none';
+
+            try {
+                // الاتصال بالسيرفر
+                const response = await fetch(`${API_URL}?url=${encodeURIComponent(input.value)}`);
+                const data = await response.json();
+
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+
+                // عرض النتائج
+                document.getElementById('thumb').src = data.thumbnail;
+                document.getElementById('vidTitle').innerText = data.title;
+                document.getElementById('dlLink').href = data.video_url;
+
+                loader.style.display = 'none';
+                resultBox.style.display = 'block';
+                btn.style.display = 'block';
+                btn.innerText = "تحليل فيديو آخر 🔄";
+
+            } catch (error) {
+                loader.style.display = 'none';
+                btn.style.display = 'block';
+                alert("حدث خطأ: " + error.message);
+            }
+        }
+    </script>
+</body>
+</html>
+
