@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify, send_file
 from flask_cors import CORS
 import requests
+import random
 
 app = Flask(__name__)
 CORS(app)
@@ -15,10 +16,16 @@ def get_video_info():
     if not url:
         return jsonify({"error": "No URL provided"}), 400
 
-    # --- الخطة الجديدة: استخدام Cobalt API (محرك خارجي) ---
-    # هذا المحرك يتجاوز حظر يوتيوب تلقائياً
-    api_url = "https://api.cobalt.tools/api/json"
+    # --- قائمة سيرفرات بديلة (تعمل حالياً) ---
+    # إذا توقف واحد، نستخدم الآخر
+    servers = [
+        "https://cobalt.kwiatekmiki.pl/api/json",
+        "https://api.cobalt.bpj.li/api/json"
+    ]
     
+    # نختار سيرفر عشوائي لتوزيع الحمل
+    api_url = random.choice(servers)
+
     headers = {
         "Accept": "application/json",
         "Content-Type": "application/json",
@@ -32,22 +39,22 @@ def get_video_info():
     }
 
     try:
-        # إرسال الطلب للمحرك الخارجي
+        # محاولة الاتصال بالسيرفر
         response = requests.post(api_url, json=payload, headers=headers)
         data = response.json()
 
         # التحقق من نجاح العملية
         if 'url' in data:
             return jsonify({
-                "title": "تم جلب الفيديو بنجاح ✅", # المحرك أحياناً لا يعطي العنوان، نضع رسالة نجاح
-                "thumbnail": "https://i.ytimg.com/vi/mqDf69j586s/maxresdefault.jpg", # صورة افتراضية أو يمكن جلبها
+                "title": "تم جلب الفيديو بنجاح 🎥", 
+                "thumbnail": "https://i.ytimg.com/vi/mqDf69j586s/maxresdefault.jpg", # صورة افتراضية
                 "duration": "N/A",
                 "video_url": data['url']
             })
         elif 'text' in data: # في حال وجود خطأ من المحرك
-             return jsonify({"error": "Cobalt Error: " + data['text']}), 500
+             return jsonify({"error": "Server Error: " + data['text']}), 500
         else:
-             return jsonify({"error": "فشل جلب الرابط، حاول مرة أخرى."}), 500
+             return jsonify({"error": "فشل جلب الرابط من السيرفر الخارجي"}), 500
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
